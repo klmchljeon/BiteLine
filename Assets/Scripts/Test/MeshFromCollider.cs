@@ -6,12 +6,24 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshRenderer))]
 public class MeshFromCollider : MonoBehaviour
 {
+    [HideInInspector]
+    public PolygonCollider2D collider_;
+    MeshFilter meshFilter;
+
     void Start()
     {
-        var collider = GetComponent<PolygonCollider2D>();
-        var meshFilter = GetComponent<MeshFilter>();
 
-        Vector2[] points2D = collider.GetPath(0);
+    }
+
+    public void Init()
+    {
+        collider_ = GetComponent<PolygonCollider2D>();
+        meshFilter = GetComponent<MeshFilter>();
+    }
+
+    public void GetMesh()
+    {
+        Vector2[] points2D = collider_.GetPath(0);
 
         // 1. Vector2 → Vector3 변환
         Vector3[] vertices = new Vector3[points2D.Length];
@@ -26,7 +38,7 @@ public class MeshFromCollider : MonoBehaviour
 
         // 3. UV 계산 (간단히 AABB 기준 정규화)
         Vector2[] uvs = new Vector2[points2D.Length];
-        Bounds bounds = collider.bounds;
+        Bounds bounds = collider_.bounds;
         for (int i = 0; i < points2D.Length; i++)
         {
             Vector2 p = points2D[i] - (Vector2)bounds.min;
