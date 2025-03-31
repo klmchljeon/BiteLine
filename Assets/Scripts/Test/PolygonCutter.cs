@@ -73,6 +73,7 @@ public class PolygonCutter : MonoBehaviour
                 }
 
                 poly.points = newLocalPoints.ToArray();
+                poly.GetComponent<MeshFromCollider>().GetMesh();
             }
         }
     }

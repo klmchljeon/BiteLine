@@ -6,11 +6,17 @@ public class ColliderOutline : MonoBehaviour
     public Color outlineColor = Color.white;
     public float width = 0.05f;
 
+    PolygonCollider2D col;
+    LineRenderer line;
+
     void Start()
     {
-        var col = GetComponent<PolygonCollider2D>();
-        var line = GetComponent<LineRenderer>();
+        col = GetComponent<PolygonCollider2D>();
+        line = GetComponent<LineRenderer>();
+    }
 
+    public void GetOutLine()
+    {
         Vector2[] points = col.GetPath(0);
         line.positionCount = points.Length + 1;
 

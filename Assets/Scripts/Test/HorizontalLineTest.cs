@@ -9,7 +9,7 @@ public class HorizontalLineTest : MonoBehaviour
     void Update()
     {
         DrawHorizontalLine();
-        CheckChildPolygons();
+        //CheckChildPolygons();
     }
 
     // 카메라의 시점을 기준으로, 객체들이 위치한 z값에 맞게 수평선을 그립니다.
