@@ -9,16 +9,24 @@ public class GameManager : MonoBehaviour
     public event Action OnEvaluateGameEnd;
     public event Action OnGameOver;
     public event Action OnSuccess;
+    public event Action<string> OnScoreUp;
     public event Action OnCreated;
+
+    public int curScore;
+    public int highScore;
+    const string ScoreKey = "HighScore";
 
     void Awake()
     {
+        curScore = 0;
         // 싱글톤 패턴 구현
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
+        highScore = PlayerPrefs.GetInt(ScoreKey,0);
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
@@ -42,6 +50,11 @@ public class GameManager : MonoBehaviour
         EventBus.OnCuttingFinished -= HandleCuttingFinished;
     }
 
+    private void Start()
+    {
+        curScore = 0;
+    }
+
     // === 이벤트 핸들러 ===
 
     private void HandleObjectStopped()
@@ -53,12 +66,22 @@ public class GameManager : MonoBehaviour
     private void HandleGameOver()
     {
         Debug.Log("게임 오버!");
+        if (highScore < curScore)
+        {
+            highScore = curScore;
+            PlayerPrefs.SetInt(ScoreKey, highScore);
+            OnScoreUp?.Invoke("high");
+        }
+
         OnGameOver?.Invoke();
     }
 
     private void HandleSuccess()
     {
         Debug.Log("성공!");
+        curScore++;
+
+        OnScoreUp?.Invoke("cur");
         OnSuccess?.Invoke();
     }
 

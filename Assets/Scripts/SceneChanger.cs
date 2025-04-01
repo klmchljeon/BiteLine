@@ -11,6 +11,10 @@ public class SceneChanger : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(sceneName))
         {
+            if (sceneName == "GameScene" && GameManager.Instance != null)
+            {
+                GameManager.Instance.curScore = 0;
+            }
             SceneManager.LoadScene(sceneName);
         }
         else

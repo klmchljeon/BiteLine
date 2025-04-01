@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EventManager_Parent : MonoBehaviour
 {
+    public GameObject gameoverObject;
     void Start()
     {
         GameManager.Instance.OnGameOver += Drop;
@@ -19,6 +20,7 @@ public class EventManager_Parent : MonoBehaviour
     void Drop()
     {
         GetComponent<GravityApplier>().ApplyDefaultGravityToChildren();
+        gameoverObject.SetActive(true);
     }
 
     void Success()
