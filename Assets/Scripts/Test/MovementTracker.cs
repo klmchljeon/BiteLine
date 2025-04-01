@@ -76,6 +76,8 @@ public class MovementTracker : MonoBehaviour
     {
         Debug.Log("지난 0.5초 동안 모든 자식 오브젝트가 정지 상태입니다.");
         ResetTracking();
+
+        EventBus.RaiseObjectStopped();
     }
 
     // 큐, 카운터, 슬라이딩 윈도우 관련 상태 초기화

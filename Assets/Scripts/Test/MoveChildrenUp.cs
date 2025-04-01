@@ -30,6 +30,8 @@ public class MoveChildrenUp : MonoBehaviour
             float t = timeElapsed / duration;
             for (int i = 0; i < children.Length; i++)
             {
+                if (children[i] == null) continue;
+
                 Vector3 targetPosition = startPositions[i] + new Vector3(0, yOffset, 0);
                 children[i].position = Vector3.Lerp(startPositions[i], targetPosition, t);
             }
@@ -41,7 +43,11 @@ public class MoveChildrenUp : MonoBehaviour
         // 마지막 위치 정확히 지정
         for (int i = 0; i < children.Length; i++)
         {
+            if (children[i] == null) continue;
+
             children[i].position = startPositions[i] + new Vector3(0, yOffset, 0);
         }
+
+        EventBus.RaiseCuttingFinished();
     }
 }
