@@ -6,7 +6,7 @@ public class ObjectGenerator : MonoBehaviour
 {
     public Vector2 center;
     public float PolygonArea;
-    private float dArea = 0.665f;
+    private float dArea = 0.666f;
     private float testPrevArea;
 
     private GameObject curObject;
@@ -57,8 +57,9 @@ public class ObjectGenerator : MonoBehaviour
         renderer.material = mat;
     }
 
-    void Cal(float area)
+    void Cal(float p)
     {
+        float area = p * dArea;
         for (int i = 0; i < size; i++)
         {
             int n = counts[i];
