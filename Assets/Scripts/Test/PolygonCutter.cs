@@ -70,32 +70,44 @@ public class PolygonCutter : MonoBehaviour
             // - 교차하는 경우: 클리핑 진행
             else
             {
-                List<Vector3> clippedCamPoints = SutherlandHodgmanClip(camPoints, lineY);
-
-                // 클리핑 결과가 3개 미만이면 다각형으로 성립되지 않으므로 삭제
-                if (clippedCamPoints.Count < 3)
-                {
-                    Destroy(child.gameObject);
-                    continue;
-                }
-
-                // 3. 클리핑된 결과(카메라 좌표)를 다시 월드 좌표 → 자식 로컬 좌표로 변환하여
-                //    PolygonCollider2D의 새 점 배열로 할당합니다.
-                List<Vector2> newLocalPoints = new List<Vector2>();
-                foreach (Vector3 cp in clippedCamPoints)
-                {
-                    Vector3 worldPoint = Camera.main.transform.TransformPoint(cp);
-                    Vector3 localPoint = child.transform.InverseTransformPoint(worldPoint);
-                    newLocalPoints.Add(new Vector2(localPoint.x, localPoint.y));
-                }
-
-                poly.points = newLocalPoints.ToArray();
-                poly.GetComponent<MeshFromCollider>().GetMesh();
-
                 List<List<Vector3>> clippedCamPointsList = SutherlandHodgmanClipList(camPoints, lineY);
+
+                foreach (List<Vector3> clippedCamPoints in clippedCamPointsList)
+                {
+                    List<Vector2> newLocalPoints = new List<Vector2>();
+                    foreach (Vector3 cp in clippedCamPoints)
+                    {
+                        Vector3 worldPoint = Camera.main.transform.TransformPoint(cp);
+                        Vector3 localPoint = child.transform.InverseTransformPoint(worldPoint);
+                        newLocalPoints.Add(new Vector2(localPoint.x, localPoint.y));
+                    }
+
+                    GenPiece(child.gameObject, newLocalPoints);
+                }
+
+                //poly.points = newLocalPoints.ToArray();
+                //poly.GetComponent<MeshFromCollider>().GetMesh();
+                Destroy(child.gameObject);
+
                 Debug.Log($"현재 클리핑된 조각 개수: {clippedCamPointsList.Count}");
             }
         }
+    }
+
+    void GenPiece(GameObject obj, List<Vector2> poly)
+    {
+        GameObject clone = Instantiate(obj, transform);
+        
+        PolygonCollider2D polygon = clone.GetComponent<PolygonCollider2D>();
+        polygon.enabled = true;
+        polygon.points = poly.ToArray();
+
+        MeshFromCollider mesh = clone.GetComponent<MeshFromCollider>();
+        mesh.enabled = true;
+        mesh.Init();
+        mesh.GetMesh();
+
+        return;
     }
 
     List<List<Vector3>> SutherlandHodgmanClipList(List<Vector3> poly, float clipY)
