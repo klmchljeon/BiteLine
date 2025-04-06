@@ -49,7 +49,7 @@ public class Slingshot : MonoBehaviour
             Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //Debug.Log("Mouse Dragging... Current Position: " + currentMousePosition);
 
-            Debug.Log((currentMousePosition - dragStartPosition).y);
+            //Debug.Log((currentMousePosition - dragStartPosition).y);
             if ((currentMousePosition - dragStartPosition).y > UpperBoundY)
             {
                 aimLine.enabled = false;
@@ -76,7 +76,7 @@ public class Slingshot : MonoBehaviour
         {
             isDragging = false;
             Vector3 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log((dragEndPosition - dragStartPosition).y);
+            //Debug.Log((dragEndPosition - dragStartPosition).y);
 
             rb.isKinematic = false;
             aimLine.enabled = false;
@@ -87,7 +87,7 @@ public class Slingshot : MonoBehaviour
             }
             Vector2 direction = dragStartPosition - dragEndPosition;
             rb.AddForce(direction * launchPower, ForceMode2D.Impulse);
-            Debug.Log("Mouse Up at: " + dragEndPosition);
+            //Debug.Log("Mouse Up at: " + dragEndPosition);
 
             transform.GetChild(1).SetParent(ObjectParent, true);
             ObjectParent.GetComponent<MovementTracker>().ignoreMovementTracking = false;

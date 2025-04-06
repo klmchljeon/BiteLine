@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ObjectGenerator : MonoBehaviour
@@ -12,14 +13,18 @@ public class ObjectGenerator : MonoBehaviour
     private GameObject curObject;
     public GameObject prefab;
 
+    public GameObject customObjects;
+
+    private int customSize = 0;
     private int size = 3;
     private int[] counts = { 3, 4, 6 };
-    private List<Vector2>[] paths = new List<Vector2>[3];
+    private List<List<Vector2>> paths = new List<List<Vector2>>();
     private Color[] colors = { Color.blue, Color.red, Color.yellow };
 
     private void Start()
     {
         Cal(PolygonArea);
+        CalCustomOutline();
         testPrevArea = PolygonArea;
 
         if (transform.childCount == 1)
@@ -39,7 +44,7 @@ public class ObjectGenerator : MonoBehaviour
 
     public void GenObject() //테스트용 퍼블릭
     {
-        int idx = Random.Range(0, size);
+        int idx = Random.Range(0, size+customSize);
 
         Vector3 position = new Vector3(center.x, center.y, 0f);
         curObject = Instantiate(prefab, position, Quaternion.identity, transform);
@@ -52,18 +57,19 @@ public class ObjectGenerator : MonoBehaviour
         MeshRenderer renderer = curObject.GetComponent<MeshRenderer>();
         Material mat = new Material(Shader.Find("Sprites/Default"));
 
-        mat.color = colors[idx]; 
+        mat.color = colors[idx%size]; 
 
         renderer.material = mat;
     }
 
     void Cal(float p)
     {
+        paths.Clear();
         float area = p * dArea;
         for (int i = 0; i < size; i++)
         {
             int n = counts[i];
-            paths[i] = new List<Vector2>();
+            paths.Add(new List<Vector2>());
 
             if (n < 3) n = 3;
 
@@ -83,6 +89,18 @@ public class ObjectGenerator : MonoBehaviour
                 float y = radius * Mathf.Sin(theta);
                 paths[i].Add(new Vector2(x, y));
             }
+        }
+    }
+
+    void CalCustomOutline()
+    {
+        if (customObjects == null) return;
+
+        foreach (Transform obj in customObjects.transform)
+        {
+            if (obj.GetComponent<PolygonCollider2D>() == null) continue;
+            paths.Add(obj.GetComponent<PolygonCollider2D>().GetPath(0).ToList());
+            customSize++;
         }
     }
 }
